@@ -4,11 +4,11 @@ This is a simple shell program implemented in C. It provides basic command funct
 
 ## Getting Started
 
-To compile and run the shell program, follow these steps:
+If you just want to check the functionality of this project you can do it online [here](https://www.programiz.com/c-programming/online-compiler/). For running it in your system follow the next steps:
 
 1. Make sure you have GCC (GNU Compiler Collection) installed on your system.
 
-> For installing gcc refer [this](https://gist.github.com/alandsilva26/53cd2fecf253554c2f671766d3df5d66). In case you just want to check the functionality of this project without installing gcc you can do it [here](https://www.programiz.com/c-programming/online-compiler/).
+> In case you don't have gcc refer [this](https://gist.github.com/alandsilva26/53cd2fecf253554c2f671766d3df5d66).
 
 2. Clone this repository or download the source code files.
 
