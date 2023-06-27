@@ -47,3 +47,11 @@ Additionally, the shell keeps track of the command history. You can use the up a
 ## Contributing
 
 Contributions to this project are welcome! If you have any suggestions, improvements, or bug fixes, feel free to open an issue or submit a pull request.
+
+## References
+
+https://www.ibm.com/docs/en/aix/7.2?topic=administration-operating-system-shells
+
+https://www.geeksforgeeks.org/introduction-linux-shell-shell-scripting/
+
+https://blog.ehoneahobed.com/building-a-simple-shell-in-c-part-1
