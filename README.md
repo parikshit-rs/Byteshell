@@ -70,3 +70,9 @@ https://www.ibm.com/docs/en/aix/7.2?topic=administration-operating-system-shells
 https://www.geeksforgeeks.org/introduction-linux-shell-shell-scripting/
 
 https://blog.ehoneahobed.com/building-a-simple-shell-in-c-part-1
+
+https://www.geeksforgeeks.org/bind-command-in-linux-with-examples/
+
+https://www.cyberciti.biz/faq/unix-linux-bg-command-examples-usage-syntax/
+
+https://unix.stackexchange.com/questions/19323/what-is-the-caller-command
