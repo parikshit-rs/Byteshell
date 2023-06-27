@@ -13,7 +13,6 @@ The command line interface (CLI) is a text-based interface that allows users to 
 ### Command-Line Arguments
 Command-line arguments allow users to pass additional information to a script or program when executing it from the command line. Arguments are typically specified after the command itself and can be used to modify the behavior or provide input to the script. For example:
 
-bash
 ```
 ./script.sh arg1 arg2
 ```
