@@ -1,23 +1,85 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 
 #define MAX_COMMAND_LENGTH 100
-#define MAX_ARGS 10
-#define MAX_HISTORY 50
+#define MAX_HISTORY_SIZE 10
 
-char command_history[MAX_HISTORY][MAX_COMMAND_LENGTH];
+char* history[MAX_HISTORY_SIZE];
 int history_count = 0;
 
-void cd_command(char *directory) {
-    if (directory == NULL) {
-        chdir(getenv("HOME"));
+typedef struct {
+    char key[10];
+    char command[MAX_COMMAND_LENGTH];
+} Binding;
+
+Binding bindings[10];
+int binding_count = 0;
+
+void print_prompt() {
+    printf("Shell> ");
+}
+
+void read_command(char* command) {
+    fgets(command, MAX_COMMAND_LENGTH, stdin);
+    command[strcspn(command, "\n")] = '\0';  // Remove newline character
+}
+
+void add_to_history(const char* command) {
+    if (history_count < MAX_HISTORY_SIZE) {
+        history[history_count] = strdup(command);
+        history_count++;
     } else {
-        if (chdir(directory) != 0) {
-            printf("Directory not found.\n");
+        free(history[0]);
+        for (int i = 1; i < MAX_HISTORY_SIZE; i++) {
+            history[i - 1] = history[i];
         }
+        history[MAX_HISTORY_SIZE - 1] = strdup(command);
+    }
+}
+
+void display_history() {
+    for (int i = 0; i < history_count; i++) {
+        printf("%d. %s\n", i + 1, history[i]);
+    }
+}
+
+void execute_command(char* command) {
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        printf("Error: Failed to fork\n");
+        return;
+    } else if (pid == 0) {
+        // Child process
+        char* args[MAX_COMMAND_LENGTH];
+        int arg_count = 0;
+
+        // Split command into arguments
+        char* token = strtok(command, " ");
+        while (token != NULL) {
+            args[arg_count] = token;
+            arg_count++;
+            token = strtok(NULL, " ");
+        }
+        args[arg_count] = NULL;
+
+        if (execvp(args[0], args) == -1) {
+            printf("Error: Failed to execute command\n");
+            exit(EXIT_FAILURE);
+        }
+    } else {
+        // Parent process
+        wait(NULL);
+    }
+}
+
+void cd_command(char* directory) {
+    if (chdir(directory) == -1) {
+        printf("Error: Failed to change directory\n");
     }
 }
 
@@ -26,101 +88,98 @@ void exit_command() {
 }
 
 void help_command() {
-    printf("Available commands:\n");
-    printf("cd [directory] - Change the current working directory.\n");
-    printf("exit - Exit the shell program.\n");
-    printf("help - Display information about the available commands.\n");
-    printf("bind [key] [command] - Bind a specific key to execute a command.\n");
-    printf("bg [command] - Execute a command in the background.\n");
-    printf("caller [command] - Execute a command as if it was called from the shell.\n");
-    printf("history - Display the command history.\n");
+    printf("Shell Program Help:\n");
+    printf("cd <directory>    - Change directory\n");
+    printf("exit              - Exit the shell\n");
+    printf("help              - Display this help message\n");
+    printf("execute <command> - Execute a command\n");
+    printf("wait              - Wait for child processes to finish\n");
+    printf("fork              - Create a child process\n");
+    printf("history           - Display command history\n");
+    printf("bind <key> <cmd>  - Bind a command to a key\n");
+    printf("caller            - Display the caller process ID\n");
+    printf("bg <command>      - Execute a command in the background\n");
 }
 
-void bind_command(char *key, char *command) {
-    // Implement the bind command logic here
-    printf("Bind command not implemented.\n");
-}
-
-void bg_command(char *command) {
-    // Implement the bg command logic here
-    printf("Background command not implemented.\n");
-}
-
-void caller_command(char *command) {
-    // Implement the caller command logic here
-    printf("Caller command not implemented.\n");
-}
-
-void history_command() {
-    int start = (history_count - MAX_HISTORY) >= 0 ? history_count - MAX_HISTORY : 0;
-    for (int i = start; i < history_count; i++) {
-        printf("%d. %s\n", i+1, command_history[i % MAX_HISTORY]);
+void bind_command(char* key, char* command) {
+    if (binding_count < 10) {
+        strcpy(bindings[binding_count].key, key);
+        strcpy(bindings[binding_count].command, command);
+        binding_count++;
+        printf("Command '%s' is bound to key '%s'\n", command, key);
+    } else {
+        printf("Error: Maximum binding limit reached\n");
     }
 }
 
-void execute_command(char *args[]) {
+void caller_command() {
+    pid_t parent_pid = getppid();
+    printf("Parent Process ID: %d\n", parent_pid);
+}
+
+void bg_command(char* command) {
     pid_t pid = fork();
-    if (pid == 0) {
+
+    if (pid == -1) {
+        printf("Error: Failed to fork\n");
+        return;
+    } else if (pid == 0) {
         // Child process
-        if (execvp(args[0], args) == -1) {
-            printf("Command not found.\n");
-            exit(EXIT_FAILURE);
-        }
-    } else if (pid < 0) {
-        // Error forking
-        printf("Error forking process.\n");
+        execute_command(command);
+        exit(0);
     } else {
         // Parent process
-        wait(NULL);
+        printf("Background process started with PID: %d\n", pid);
     }
-}
-
-void add_to_history(char *command) {
-    strncpy(command_history[history_count % MAX_HISTORY], command, MAX_COMMAND_LENGTH);
-    history_count++;
 }
 
 int main() {
-    char input[MAX_COMMAND_LENGTH];
-    char *args[MAX_ARGS];
-    char *token;
+    char command[MAX_COMMAND_LENGTH];
 
     while (1) {
-        printf("> ");
-        fgets(input, sizeof(input), stdin);
-        input[strcspn(input, "\n")] = '\0'; // Remove trailing newline
+        print_prompt();
+        read_command(command);
 
-        add_to_history(input);
+        add_to_history(command);
 
-        token = strtok(input, " ");
-        int i = 0;
-        while (token != NULL) {
-            args[i] = token;
-            token = strtok(NULL, " ");
-            i++;
-        }
-        args[i] = NULL;
-
-        if (args[0] == NULL) {
-            continue; // Empty command, prompt again
-        }
-
-        if (strcmp(args[0], "cd") == 0) {
-            cd_command(args[1]);
-        } else if (strcmp(args[0], "exit") == 0) {
+        if (strcmp(command, "exit") == 0) {
             exit_command();
-        } else if (strcmp(args[0], "help") == 0) {
+        } else if (strcmp(command, "help") == 0) {
             help_command();
-        } else if (strcmp(args[0], "bind") == 0 && args[1] != NULL && args[2] != NULL) {
-            bind_command(args[1], args[2]);
-        } else if (strcmp(args[0], "bg") == 0 && args[1] != NULL) {
-            bg_command(args[1]);
-        } else if (strcmp(args[0], "caller") == 0 && args[1] != NULL) {
-            caller_command(args[1]);
-        } else if (strcmp(args[0], "history") == 0) {
-            history_command();
+        } else if (strncmp(command, "execute", 7) == 0) {
+            char* cmd = command + 8;  // Skip "execute "
+            execute_command(cmd);
+        } else if (strcmp(command, "wait") == 0) {
+            wait(NULL);
+        } else if (strcmp(command, "fork") == 0) {
+            fork();
+        } else if (strcmp(command, "history") == 0) {
+            display_history();
+        } else if (strncmp(command, "cd", 2) == 0) {
+            char* directory = command + 3;  // Skip "cd "
+            cd_command(directory);
+        } else if (strncmp(command, "bind", 4) == 0) {
+            char key[10];
+            char cmd[MAX_COMMAND_LENGTH];
+            sscanf(command, "%*s %s %s", key, cmd);
+            bind_command(key, cmd);
+        } else if (strcmp(command, "caller") == 0) {
+            caller_command();
+        } else if (strncmp(command, "bg", 2) == 0) {
+            char* cmd = command + 3;  // Skip "bg "
+            bg_command(cmd);
         } else {
-            execute_command(args);
+            int found = 0;
+            for (int i = 0; i < binding_count; i++) {
+                if (strcmp(command, bindings[i].key) == 0) {
+                    execute_command(bindings[i].command);
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found) {
+                printf("Error: Command not found\n");
+            }
         }
     }
 
