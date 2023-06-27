@@ -1,14 +1,32 @@
 # Byteshell
 
-This is a simple shell program implemented in C. It provides basic command functionalities such as `cd`, `exit`, and `help`. It also includes features like executing external commands, forking and waiting for child processes, and maintaining a command history.
+This is a simple shell program implemented in C. It provides a basic command-line interface with several built-in commands and additional features.
+
+## Introduction to shell and it's operations
+
+### Basic shell concept
+
+In the context of an operating system, a shell is a program that serves as a command interpreter. It provides a user-friendly interface for interacting with the operating system by accepting and executing commands. The shell acts as an intermediary between the user and the underlying operating system, facilitating the execution of various tasks and programs.
+
+The command line interface (CLI) is a text-based interface that allows users to interact with the shell and execute commands by typing them in a terminal or console window. The CLI offers several advantages, including flexibility, scripting & automation, remote access, and repeatability.
+
+### Command-Line Arguments
+Command-line arguments allow users to pass additional information to a script or program when executing it from the command line. Arguments are typically specified after the command itself and can be used to modify the behavior or provide input to the script. For example:
+
+bash
+```
+./script.sh arg1 arg2
+```
+In this example, arg1 and arg2 are command-line arguments passed to the script script.sh. The script can access and process these arguments within its code.
+
+Command-line arguments can be used to provide input data, specify options or flags, control the execution flow, or customize the behavior of a script or program.
+Please note that the actual usage and syntax of commands and command-line arguments may vary depending on the specific shell or operating system you are using.
 
 ## Getting Started
 
 If you just want to check the functionality of this project you can do it online [here](https://www.programiz.com/c-programming/online-compiler/). For running it in your system follow the next steps:
 
 1. Make sure you have GCC (GNU Compiler Collection) installed on your system.
-
-> In case you don't have gcc refer [this](https://gist.github.com/alandsilva26/53cd2fecf253554c2f671766d3df5d66).
 
 2. Clone this repository or download the source code files.
 
@@ -30,23 +48,20 @@ If you just want to check the functionality of this project you can do it online
 
 7. The shell program will start, and you will see a prompt (`>`) where you can enter commands.
 
-## Usage
+> In case you don't have gcc refer [this](https://gist.github.com/alandsilva26/53cd2fecf253554c2f671766d3df5d66).
 
-The shell program supports the following commands:
-
-- `cd [directory]`: Change the current working directory. If no directory is specified, it will change to the home directory.
-
-- `exit`: Exit the shell program.
-
-- `help`: Display information about the available commands.
-
-The shell program also allows you to execute external commands. Simply enter the command as you would in a regular terminal.
-
-Additionally, the shell keeps track of the command history. You can use the up and down arrow keys to navigate through the history and press Enter to execute a previous command.
-
-## Contributing
-
-Contributions to this project are welcome! If you have any suggestions, improvements, or bug fixes, feel free to open an issue or submit a pull request.
+## Features
+Here are some features you can use in this shell:
+- cd: Change the current working directory.
+- exit: Terminate the shell program.
+- help: Display a list of available commands.
+- execute calls: Execute external commands by forking and creating child processes.
+- wait: Wait for child processes to finish before executing the next command.
+- fork and parent-child process: Demonstrate the creation of child processes using fork.
+- history: Store and display a history of executed commands.
+- bind: Bind a command to a specific key combination for quick execution.
+- bg: Execute a command in the background.
+- caller: Display the Parent Process ID (PID).
 
 ## References
 
