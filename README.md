@@ -29,7 +29,7 @@ If you just want to check the functionality of this project you can do it online
 
 2. Clone this repository or download the source code files.
 
-3. Open a terminal or command prompt.
+3. Open a terminal or command prompt (WSL Recommended).
 
 4. Navigate to the directory where the source code files are located.
 
@@ -63,6 +63,8 @@ Here are some features you can use in this shell:
 - caller: Display the Parent Process ID (PID).
 
 ## References
+
+https://learn.microsoft.com/en-us/windows/wsl/install
 
 https://www.ibm.com/docs/en/aix/7.2?topic=administration-operating-system-shells
 
