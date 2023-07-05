@@ -1,5 +1,7 @@
 # Byteshell
 
+> **Parikshit Ramchandra Sahu, BTech 3rd year, ECE, IIT Roorkee**
+
 This is a simple shell program implemented in C. It provides a basic command-line interface with several built-in commands and additional features.
 
 ## Introduction to shell and it's operations
